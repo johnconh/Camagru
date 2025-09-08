@@ -1,11 +1,17 @@
-<?php require_once 'header.php'; ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Camagru</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+    <?php include 'header.php'; ?>
 
-<main>
-    <?php
-    if (isset($view)) {
-        require_once $view;
-    }
-    ?>
-</main>
+    <main>
+        <?php include $view; ?>
+    </main>
 
-<?php require_once 'footer.php'; ?>
+    <?php include 'footer.php'; ?>
+</body>
+</html>

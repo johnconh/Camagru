@@ -1,8 +1,7 @@
 <?php
-require_once  '../config/database.php';
+require_once  __DIR__.'/../config/database.php';
 
 class User{
-
     public $id;
     public $username;
     public $email;
@@ -24,5 +23,38 @@ class User{
         return $success ? $token : false;
     }
 
-    
+    public static function login($email, $password) {
+        $db = Database::getConnection();
+        $stmt = $db->prepare("SELECT * FROM users WHERE email = :email AND is_verified = 1");
+        $stmt->execute([':email' => htmlspecialchars($email, ENT_QUOTES, 'UTF-8')]);
+        $user = $stmt->fetch();
+
+        if ($user && password_verify($password, $user['password'])) {
+            return $user;
+        }
+
+        return false;
+    }
+
+    public static function findByID ($id) {
+        $db = Database::getConnection();
+        $stmt = $db->prepare("SELECT * FROM users WHERE id = :id");
+        $stmt->execute([':id' => $id]);
+        return $stmt->fetch();
+    }
+
+    public static function verifyToken($token) {
+        $db = Database::getConnection();
+        $stmt = $db->prepare("SELECT id FROM users WHERE verification_token = :token");
+        $stmt->execute([':token' => $token]);
+        $user = $stmt->fetch();
+
+        if ($user){
+            $stmt = $db->prepare("UPDATE users SET is_verified = 1, verification_token = NULL WHERE id = :id");
+            $stmt->execute([':id' => $user['id']]);
+            return true;
+        }
+
+        return false;
+    }
 }
