@@ -180,6 +180,23 @@ main {
     text-decoration: underline;
 }
 
+.password-requirements {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    font-size: 0.85em;
+}
+
+.requirement {
+    margin: 5px 0;
+    color: #dc3545;
+}
+
+.requirement.valid {
+    color: #28a745;
+}
+
 /* ========================================= */
 /* RESPONSIVE */
 /* ========================================= */

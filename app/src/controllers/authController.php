@@ -17,6 +17,8 @@ class AuthController {
                 $error = "Invalid email format.";
             } elseif ($password !== $confirm) {
                 $error = "Passwords do not match.";
+            } elseif (!$this->validatePassword($password)) {
+                $error = "Password must be at least 8 characters long and contain uppercase, lowercase, and numbers.";
             } else {
                 $db = Database::getConection();
                 $stmt = $db->prepare("SELECT id FROM users WHERE username = :username OR email = :email");
@@ -36,6 +38,26 @@ class AuthController {
         }
         $view = '../src/views/auth/register.php';
         require_once '../src/views/layouts/main.php';
+    }
+
+    private function validatePassword($password) {
+        if (strlen($password) < 8) {
+            return false;
+        }
+
+        if (!preg_match('/[A-Z]/', $password)) {
+            return false;
+        }
+
+        if (!preg_match('/[a-z]/', $password)) {
+           
+            return false;
+        }
+        if (!preg_match('/[0-9]/', $password)) {
+            return false;
+        }
+
+        return true;
     }
 
     public function login(){
