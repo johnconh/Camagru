@@ -37,26 +37,33 @@
                         value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
                         required
                     >
+                    
                 </div>
                 <div class="form-group">
+                    <div class="input-with-toggle">
                     <label for="password">Password:</label>
-                    <input 
-                        type="password"
-                        id="password"
-                        name="password"
-                        placeholder="Enter your password"
-                        required
-                    >
+                        <input 
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            required
+                        >
+                        <button type="button" class="toggle-password" data-target="password" aria-label="Show password">👁️</button>
+                    </div>
                 </div>
                 <div class="form-group">
+                    <div class="input-with-toggle">
                     <label for="confirm_password">Confirm Password:</label>
-                    <input
-                        type="password"
-                        id="confirm_password"
-                        name="confirm_password"
-                        placeholder="Confirm your password"
-                        required
-                    >
+                        <input
+                            type="password"
+                            id="confirm_password"
+                            name="confirm_password"
+                            placeholder="Confirm your password"
+                            required
+                        >
+                        <button type="button" class="toggle-password" data-target="confirm_password" aria-label="Show password">👁️</button>
+                    </div>
                     <div id="password-requirements" class="password-requirements">
                         <p class="requirement" id="req-length">✗ Minimum 8 characters</p>
                         <p class="requirement" id="req-uppercase">✗ At least one uppercase letter</p>
@@ -81,7 +88,7 @@ passwordInput.addEventListener('input', function() {
     const password = this.value;
 
     checkRequirement('req-length', password.length >= 8);
-a
+
     checkRequirement('req-uppercase', /[A-Z]/.test(password));
 
     checkRequirement('req-lowercase', /[a-z]/.test(password));
@@ -117,5 +124,22 @@ form.addEventListener('submit', function(e) {
         alert('The passwords do not match.');
         return false;
     }
+});
+
+document.querySelectorAll('.toggle-password').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-target');
+        const input = document.getElementById(targetId);
+        if (!input) return;
+        if (input.type === 'password') {
+            input.type = 'text';
+            btn.setAttribute('aria-label', 'Hide password');
+            btn.textContent = '🙈';
+        } else {
+            input.type = 'password';
+            btn.setAttribute('aria-label', 'Show password');
+            btn.textContent = '👁️';
+        }
+    });
 });
 </script>
