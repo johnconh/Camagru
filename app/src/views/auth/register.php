@@ -54,15 +54,15 @@
                 </div>
                 <div class="form-group">
                     <div class="input-with-toggle">
-                    <label for="confirm_password">Confirm Password:</label>
+                    <label for="confirm">Confirm Password:</label>
                         <input
                             type="password"
-                            id="confirm_password"
-                            name="confirm_password"
+                            id="confirm"
+                            name="confirm"
                             placeholder="Confirm your password"
                             required
                         >
-                        <button type="button" class="toggle-password" data-target="confirm_password" aria-label="Show password">👁️</button>
+                        <button type="button" class="toggle-password" data-target="confirm" aria-label="Show password">👁️</button>
                     </div>
                     <div id="password-requirements" class="password-requirements">
                         <p class="requirement" id="req-length">✗ Minimum 8 characters</p>

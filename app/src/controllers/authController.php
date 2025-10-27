@@ -20,7 +20,7 @@ class AuthController {
             } elseif (!$this->validatePassword($password)) {
                 $error = "Password must be at least 8 characters long and contain uppercase, lowercase, and numbers.";
             } else {
-                $db = Database::getConection();
+                $db = Database::getConnection();
                 $stmt = $db->prepare("SELECT id FROM users WHERE username = :username OR email = :email");
                 $stmt->execute(['username' => $username, 'email' => $email]);
                 if ($stmt->fetch()) {
