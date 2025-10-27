@@ -3,19 +3,9 @@
         <div class="auth-card">
             <h2>Create an Account</h2>
 
-            <?php if (isset($error)): ?>
-                <div class="alert alert-error">
-                    ❌ <?= htmlspecialchars($error) ?>
-                </div>
-            <?php endif; ?>
+            <div id="message-container"></div>
 
-            <?php if (isset($success)): ?>
-                <div class="alert alert-success">
-                    ✅ <?= htmlspecialchars($success) ?>
-                </div>
-            <?php endif; ?>
-
-            <form method="POST" action="index.php?page=register" id="registerForm">
+            <form method="POST" id="registerForm">
                 <div class="form-group">
                     <label for="username">Username:</label>
                     <input 
@@ -23,7 +13,6 @@
                         id="username"
                         name="username"
                         placeholder="Enter your username"
-                        value="<?= htmlspecialchars($_POST['username'] ?? '') ?>"
                         required
                     >
                 </div>
@@ -34,14 +23,12 @@
                         id="email"
                         name="email"
                         placeholder="Enter your email"
-                        value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
                         required
                     >
-                    
                 </div>
                 <div class="form-group">
                     <div class="input-with-toggle">
-                    <label for="password">Password:</label>
+                        <label for="password">Password:</label>
                         <input 
                             type="password"
                             id="password"
@@ -54,7 +41,7 @@
                 </div>
                 <div class="form-group">
                     <div class="input-with-toggle">
-                    <label for="confirm">Confirm Password:</label>
+                        <label for="confirm">Confirm Password:</label>
                         <input
                             type="password"
                             id="confirm"
@@ -71,7 +58,9 @@
                         <p class="requirement" id="req-number">✗ At least one number</p>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Register</button>
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                    Register
+                </button>
             </form>
             <p class="auth-link">
                 Already have an account? <a href="index.php?page=login">Login here</a>.
@@ -79,20 +68,19 @@
         </div>
     </div>
 </div>
+
 <script>
 const passwordInput = document.getElementById('password');
-const confirmInput = document.getElementById('confirm_password');
+const confirmInput = document.getElementById('confirm');
 const form = document.getElementById('registerForm');
+const submitBtn = document.getElementById('submitBtn');
+const messageContainer = document.getElementById('message-container');
 
 passwordInput.addEventListener('input', function() {
     const password = this.value;
-
     checkRequirement('req-length', password.length >= 8);
-
     checkRequirement('req-uppercase', /[A-Z]/.test(password));
-
     checkRequirement('req-lowercase', /[a-z]/.test(password));
-
     checkRequirement('req-number', /[0-9]/.test(password));
 });
 
@@ -106,25 +94,6 @@ function checkRequirement(id, isValid) {
         element.textContent = element.textContent.replace('✓', '✗');
     }
 }
-
-form.addEventListener('submit', function(e) {
-    const password = passwordInput.value;
-    
-    if (password.length < 8 || 
-        !/[A-Z]/.test(password) || 
-        !/[a-z]/.test(password) || 
-        !/[0-9]/.test(password)) {
-        e.preventDefault();
-        alert('The password does not meet the complexity requirements.');
-        return false;
-    }
-    
-    if (password !== confirmInput.value) {
-        e.preventDefault();
-        alert('The passwords do not match.');
-        return false;
-    }
-});
 
 document.querySelectorAll('.toggle-password').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -142,4 +111,68 @@ document.querySelectorAll('.toggle-password').forEach(btn => {
         }
     });
 });
+
+form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const password = passwordInput.value;
+    const confirm = confirmInput.value;
+    
+    if (password.length < 8 || 
+        !/[A-Z]/.test(password) || 
+        !/[a-z]/.test(password) || 
+        !/[0-9]/.test(password)) {
+        showMessage('The password does not meet the complexity requirements.', 'error');
+        return false;
+    }
+    
+    if (password !== confirm) {
+        showMessage('The passwords do not match.', 'error');
+        return false;
+    }
+    
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Registering...';
+    
+    const formData = new FormData(form);
+    
+    try {
+        const response = await fetch('index.php?page=register', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+        
+        const data = await response.json();
+
+        if (data.success) {
+            showMessage(data.message, 'success');
+            form.reset();
+            setTimeout(() => {
+                window.location.href = 'index.php?page=login';
+            }, 2000);
+        } else {
+            showMessage(data.message, 'error');
+        }
+        
+    } catch (error) {
+        showMessage('An error occurred. Please try again.', 'error');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Register';
+    }
+});
+
+function showMessage(message, type) {
+    messageContainer.innerHTML = `
+        <div class="alert alert-${type}">
+            ${type === 'error' ? '❌' : '✅'} ${message}
+        </div>
+    `;
+    
+    messageContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
 </script>

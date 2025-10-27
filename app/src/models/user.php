@@ -23,10 +23,10 @@ class User{
         return $success ? $token : false;
     }
 
-    public static function login($email, $password) {
+    public static function login($username, $password) {
         $db = Database::getConnection();
-        $stmt = $db->prepare("SELECT * FROM users WHERE email = :email AND is_verified = 1");
-        $stmt->execute([':email' => htmlspecialchars($email, ENT_QUOTES, 'UTF-8')]);
+        $stmt = $db->prepare("SELECT * FROM users WHERE username = :username AND is_verified = 1");
+        $stmt->execute([':username' => htmlspecialchars($username, ENT_QUOTES, 'UTF-8')]);
         $user = $stmt->fetch();
 
         if ($user && password_verify($password, $user['password'])) {

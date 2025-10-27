@@ -9,6 +9,7 @@ header, footer {
     background-color: #222;
     color: white;
     padding: 10px 20px;
+    text-align: center;
 }
 
 header .logo {
@@ -38,8 +39,9 @@ main {
     justify-content: space-between;
     align-items: center;
     background-color: #222;
-    color: white;
+    color: rgb(247, 245, 245);
     padding: 10px 20px;
+
 }
 
 .main-header .logo {
@@ -47,10 +49,21 @@ main {
     font-size: 1.5em;
 }
 
+.main-header .logo,
+.main-header .logo:link,
+.main-header .logo:visited {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.main-header .logo:hover {
+    text-decoration: underline;
+}
+
 .main-header nav a {
     color: white;
     text-decoration: none;
-    margin-left: 20px;
+    margin-left: 5px;
     font-weight: 500;
 }
 

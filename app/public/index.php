@@ -22,6 +22,9 @@ switch ($page) {
     case 'verify':
         $auth->verify();
         break;
+    case 'forgot-password':
+        $auth->forgotPassword();
+        break;
     case 'home':
     default:
         $view = '../src/views/home.php';
