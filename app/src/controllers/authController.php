@@ -132,8 +132,80 @@ class AuthController {
     }
 
     public function forgotPassword(){
+        session_start();
         
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $email = trim($_POST['email'] ?? '');
+        
+            if (empty($email)) {
+                $error = "Email is required.";
+            } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $error = "Invalid email format.";
+            } else {
+                $token = User::createResetToken($email);
+                if ($token) {
+                    EmailService::sendPasswordResetEmail($email, $token);
+                    $success = "Password reset email sent! Please check your inbox.";
+                } else {
+                    $error = "Error, please try again. Verify that the email is correct.";
+                }
+            }
+        
+            if ($this->isAjax()) {
+                if (isset($success)) {
+                    $this->jsonResponse(true, $success);
+                } else {
+                    $this->jsonResponse(false, $error);
+                }
+            }
+        }
+
         $view = '../src/views/auth/forgotPassword.php';
         require_once '../src/views/layouts/main.php';
     }
+
+    public function resetPassword(){
+        session_start();
+        $token = $_GET['token'] ?? $_POST['token'] ?? '';
+        
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $password = $_POST['password'] ?? '';
+            $confirm = $_POST['confirm'] ?? '';
+
+            if(empty($token)) {
+                $error = "No token provided.";
+            } elseif (empty($password) || empty($confirm)) {
+                $error = "All fields are required.";
+            } elseif ($password !== $confirm) {
+                $error = "Passwords do not match.";
+            } elseif (!$this->validatePassword($password)) {
+                $error = "Password must be at least 8 characters long and contain uppercase, lowercase, and numbers.";
+            } else {
+                $success = User::resetPassword($token, $password);
+                if ($success) {
+                    $message = "Password reset successful! You can now log in.";
+                } else {
+                    $error = "Invalid or expired token.";
+                }
+            }
+
+            if ($this->isAjax()) {
+                if (isset($message)) {
+                    $this->jsonResponse(true, $message);
+                } elseif (isset($success)) {
+                    $this->jsonResponse(true, "Password reset successfully!");
+                } else {
+                    $this->jsonResponse(false, $error);
+                }
+            }
+        }
+
+        if (empty($token) && !User::verifyResetToken($token)) {
+            $error = "Invalid or expired token.";
+        }
+
+        $view = '../src/views/auth/resetPassword.php';
+        require_once '../src/views/layouts/main.php';
+    }
+
 }

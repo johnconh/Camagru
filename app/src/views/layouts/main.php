@@ -13,5 +13,6 @@
     </main>
 
     <?php include 'footer.php'; ?>
+    <script src="/assets/utils.js"></script>
 </body>
 </html>

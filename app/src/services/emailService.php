@@ -20,6 +20,24 @@ class EmailService {
         }
     }
 
+    public static function sendPasswordResetEmail($to, $token) {
+        $smtp_host = $_ENV['MAIL_HOST'] ?? 'smtp.gmail.com';
+        $smtp_port = $_ENV['MAIL_PORT'] ?? 587;
+        $smtp_user = $_ENV['MAIL_USERNAME'] ?? '';
+        $smtp_pass = $_ENV['MAIL_PASSWORD'] ?? '';
+        $app_url = $_ENV['APP_URL'] ?? 'http://localhost:8080';
+
+        $subject = "Reset Your Password";
+        $link = "$app_url/index.php?page=reset-password&token=$token";
+        $body = "Hello!\n\nPlease click the link below to reset your password:\n$link\n\nThis token will expire in 5 minutes. If you did not request this, please ignore this email.\n\nThank you!";
+        try {
+            return self::sendSMTP($smtp_host, $smtp_port, $smtp_user, $smtp_pass, $to, $subject, $body);
+        } catch (Exception $e) {
+            error_log("Error sending password reset email: " . $e->getMessage());
+            return false;
+        }
+    }
+
     private static function sendSMTP($host, $port, $username, $password, $to, $subject, $body) {
 
         $socket = fsockopen($host, $port, $errno, $errstr, 30);

@@ -41,7 +41,6 @@ main {
     background-color: #222;
     color: rgb(247, 245, 245);
     padding: 10px 20px;
-
 }
 
 .main-header .logo {
@@ -71,6 +70,15 @@ main {
     text-decoration: underline;
 }
 
+.main-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: #222;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
 /* ========================================= */
 /* STYLES FOR AUTH (Login/Register) */
 /* ========================================= */
@@ -79,7 +87,7 @@ main {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     padding: 20px;
 }

@@ -22,8 +22,11 @@ switch ($page) {
     case 'verify':
         $auth->verify();
         break;
-    case 'forgot-password':
+    case 'forgotPassword':
         $auth->forgotPassword();
+        break;
+    case 'reset-password':
+        $auth->resetPassword();
         break;
     case 'home':
     default:

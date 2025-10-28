@@ -102,14 +102,4 @@ form.addEventListener('submit', async function(e) {
         submitBtn.textContent = 'Login';
     }
 });
-
-function showMessage(message, type) {
-    messageContainer.innerHTML = `
-        <div class="alert alert-${type}">
-            ${type === 'error' ? '❌' : '✅'} ${message}
-        </div>
-    `;
-    
-    messageContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
 </script>
