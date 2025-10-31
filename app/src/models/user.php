@@ -125,4 +125,72 @@ class User{
         $stmt->execute([':id' => $userId]);
     }
 
+    public static function updateProfile($userID, $data) {
+        $db = Database::getConnection();
+        
+        try{
+            $db->beginTransaction();
+
+            $updates = [];
+            $params = [':id' => $userID];
+
+            if (isset($data['username']) && !empty($data['username'])) {
+                $stmt = $db->prepare("SELECT id FROM users WHERE username = :username AND id != :id");
+                $stmt->execute([':username' => $data['username'], ':id' => $userID]);
+                if ($stmt->fetch()) {
+                    throw new Exception("Username already taken.");
+                }
+                $updates[] = "username = :username";
+                $params[':username'] = htmlspecialchars($data['username'], ENT_QUOTES, 'UTF-8');
+            }
+
+            if (isset($data['email']) && !empty($data['email'])) {
+                $stmt = $db->prepare("SELECT id FROM users WHERE email = :email AND id != :id");
+                $stmt->execute([':email' => $data['email'], ':id' => $userID]);
+                if ($stmt->fetch()) {
+                    throw new Exception("Email already in use.");
+                }
+                $updates[] = "email = :email";
+                $params[':email'] = htmlspecialchars($data['email'], ENT_QUOTES, 'UTF-8');
+            }
+
+            if (isset($data['password']) && !empty($data['password'])) {
+                $updates[] = "password = :password";
+                $params[':password'] = password_hash($data['password'], PASSWORD_BCRYPT);
+            }
+
+            if (isset($data['email_notifications'])) {
+                $updates[] = "email_notifications = :email_notifications";
+                $params[':email_notifications'] = $data['email_notifications'] ? 1 : 0;
+            }
+
+            if (empty($updates)) {
+                $db->rollBack();
+                return false;
+            }
+
+            $sql = "UPDATE users SET " . implode(", ", $updates) . " WHERE id = :id";
+            $stmt = $db->prepare($sql);
+            $success = $stmt->execute($params);
+
+            $db->commit();
+            return $success;
+        } catch (Exception $e) {
+            $db->rollBack();
+            throw $e;
+        }
+    }
+
+    public static function verifyCurrentPassword($userId, $password) {
+        $db = Database::getConnection();
+        $stmt = $db->prepare("SELECT password FROM users WHERE id = :id");
+        $stmt->execute([':id' => $userId]);
+        $user = $stmt->fetch();
+        
+        if ($user && password_verify($password, $user['password'])) {
+            return true;
+        }
+        
+        return false;
+    }
 }

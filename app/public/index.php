@@ -5,6 +5,7 @@ require_once '../src/config/database.php';
 require_once '../src/controllers/authController.php';
 require_once '../src/models/user.php';
 require_once '../src/services/emailService.php';
+require_once '../src/controllers/userController.php';
 
 $page = $_GET['page'] ?? 'home';
 $auth = new AuthController();
@@ -27,6 +28,10 @@ switch ($page) {
         break;
     case 'reset-password':
         $auth->resetPassword();
+        break;
+    case 'editProfile':
+        $controller = new UserController();
+        $controller->editProfile();
         break;
     case 'home':
     default:

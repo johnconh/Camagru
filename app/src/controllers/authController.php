@@ -208,4 +208,5 @@ class AuthController {
         require_once '../src/views/layouts/main.php';
     }
 
+
 }
