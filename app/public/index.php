@@ -6,9 +6,11 @@ require_once '../src/controllers/authController.php';
 require_once '../src/models/user.php';
 require_once '../src/services/emailService.php';
 require_once '../src/controllers/userController.php';
+require_once '../src/controllers/photoController.php';
 
 $page = $_GET['page'] ?? 'home';
 $auth = new AuthController();
+$photo = new PhotoController();
 
 switch ($page) {
     case 'register':
@@ -32,6 +34,9 @@ switch ($page) {
     case 'editProfile':
         $controller = new UserController();
         $controller->editProfile();
+        break;
+    case 'photoEditor':
+        $photo->editor();
         break;
     case 'home':
     default:
