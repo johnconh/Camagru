@@ -73,11 +73,11 @@ class PhotoController {
             $this->jsonResponse(false, 'Please select a filter');
         }
 
-        if(!isset($_FILES['photo']) || $_FILES['photo']['error'] !== UPLOAD_ERR_OK) {
+        if(!isset($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
             $this->jsonResponse(false, 'Please upload an image');
         }
 
-        $uploadImage = $_FILES['photo'];
+        $uploadImage = $_FILES['image'];
 
         $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
         if (!in_array($uploadImage['type'], $allowedTypes)) {
@@ -96,7 +96,7 @@ class PhotoController {
                 $this->jsonResponse(false, 'Error processing image');
             }
 
-            $photo = Photo::create($userId, $finalImage, $uploadedFile['name'], $overlay);
+            $photo = Photo::create($userID, $finalImage, $uploadImage['name'], $overlay);
             if ($photo) {
                 $this->jsonResponse(true, 'Photo created successfully', ['photo' => $photo]);
             } else {

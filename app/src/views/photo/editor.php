@@ -132,7 +132,8 @@ createBtn.addEventListener('click', async function() {
             }
         });
         
-        const data = await response.json();
+        const data = await response.text();
+        console.log(data);
         
         if (data.success) {
             showMessage(data.message, 'success');

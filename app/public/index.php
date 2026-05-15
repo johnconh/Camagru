@@ -38,6 +38,9 @@ switch ($page) {
     case 'photoEditor':
         $photo->editor();
         break;
+    case 'photo-create':
+        $photo->create();
+        break;
     case 'home':
     default:
         $view = '../src/views/home.php';
