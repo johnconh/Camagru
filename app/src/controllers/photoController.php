@@ -43,7 +43,7 @@ class PhotoController {
     }
 
     private function getOverlayImages() {
-        $overlayDir = __DIR__ . '/../../public/assets/overlays/';
+        $overlayDir = __DIR__ . '/../../public/assets/images/overlays/';
         $overlays = [];
         if (is_dir($overlayDir)) {
             $files = scandir($overlayDir);

@@ -19,10 +19,10 @@
             <p id="filename" class="filename-display"></p>
         </div>
         <div class="overlays-section">
-            <h3>Select a Filter:</h3>
+            <h3>Select a Stickers:</h3>
             <div class="overlays-grid" id="overlaysGrid">
                 <?php if (empty($overlays)): ?>
-                    <p class="no-overlays">No filters available</p>
+                    <p class="no-overlays">No stickers available</p>
                 <?php else: ?>
                     <?php foreach ($overlays as $overlay): ?>
                         <div class="overlay-item" data-overlay="<?= htmlspecialchars($overlay['filename']) ?>">
