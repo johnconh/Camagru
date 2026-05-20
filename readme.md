@@ -101,3 +101,6 @@ camagru/
     ├── API.md
     ├── SETUP.md
     └── screenshots/
+
+johnconh
+Pass1234

@@ -281,7 +281,7 @@ main {
 
 
 /* ========================================= */
-/* STYLES FOR PHOTO (Photo Editor) */
+/* STYLES FOR PHOTO EDITOR (STICKERS VERSION) */
 /* ========================================= */
 
 .editor-container {
@@ -292,10 +292,14 @@ main {
     margin: auto;
 }
 
+/* ========================================= */
+/* MAIN EDITOR */
+/* ========================================= */
+
 .editor-main {
     background: white;
     border-radius: 15px;
-    padding: 15px;
+    padding: 20px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
@@ -304,28 +308,106 @@ main {
     color: #333;
 }
 
-.image-preview {
-    width: 100%;
-    height: 400px;
-    background: #f5f5f5;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 20px;
-    overflow: hidden;
+/* ========================================= */
+/* IMAGE EDITOR */
+/* ========================================= */
+
+.image-preview{
+
+    width:100%;
+
+    height:500px;
+
+    background:#e9e9e9;
+
+    border-radius:10px;
+
+    overflow:hidden;
+
+    position:relative;
+
+    display:flex;
 }
+
+#editorCanvas{
+
+    width:100%;
+
+    height:100%;
+
+    display:block;
+}
+/* NUEVO CONTENEDOR DEL EDITOR */
+
+.sticker{
+    position:absolute;
+    width:40px;
+
+    z-index:1000;
+
+    cursor:grab;
+
+    user-select:none;
+}
+
+.sticker img{
+    width:100%;
+    display:block;
+
+    pointer-events:none;
+}
+
+#stickersLayer{
+    border:3px solid red;
+}
+
+.sticker{
+    border:2px solid blue;
+}
+
+/* PLACEHOLDER */
 
 .preview-placeholder {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     color: #999;
     font-size: 1.1em;
+    z-index: 1;
 }
 
-#previewImage {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
+/* ========================================= */
+/* STICKERS */
+/* ========================================= */
+
+.sticker {
+    position: absolute;
+    cursor: grab;
+    user-select: none;
+    z-index: 20;
+    transition: transform 0.15s ease;
 }
+
+.sticker:hover {
+    transform: scale(1.03);
+}
+
+.sticker:active {
+    cursor: grabbing;
+    transform: scale(1.05);
+}
+
+.sticker img {
+    width: 100%;
+    display: block;
+    pointer-events: none;
+    user-select: none;
+}
+
+    /* ========================================= */
+    /* UPLOAD SECTION */
+    /* ========================================= */
 
 .upload-section {
     text-align: center;
@@ -354,6 +436,10 @@ main {
     font-size: 0.9em;
 }
 
+    /* ========================================= */
+    /* STICKERS SECTION */
+    /* ========================================= */
+
 .overlays-section h3 {
     margin-bottom: 15px;
     color: #555;
@@ -361,7 +447,7 @@ main {
 
 .overlays-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
     gap: 15px;
     margin-bottom: 30px;
 }
@@ -369,51 +455,73 @@ main {
 .overlay-item {
     position: relative;
     cursor: pointer;
-    border: 3px solid transparent;
-    border-radius: 8px;
+    border: 2px solid transparent;
+    border-radius: 10px;
     overflow: hidden;
     transition: all 0.3s;
     aspect-ratio: 1;
+    background: #fafafa;
 }
 
 .overlay-item:hover {
-    transform: scale(1.05);
-}
-
-.overlay-item.selected {
+    transform: scale(1.08);
     border-color: #667eea;
 }
 
 .overlay-item img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    padding: 10px;
 }
+
 
 .overlay-check {
-    position: absolute;
-    top: 5px;
-    right: 5px;
+    display: none;
+}
+
+    /* ========================================= */
+    /* BUTTONS */
+    /* ========================================= */
+
+.btn {
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-primary {
     background: #667eea;
     color: white;
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
+    width: 100%;
 }
 
-.overlay-item.selected .overlay-check {
-    display: flex;
+.btn-primary:hover {
+    background: #5568d3;
 }
 
-.no-overlays, .no-photos {
+.btn-primary:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+    /* ========================================= */
+    /* EMPTY STATES */
+    /* ========================================= */
+
+.no-overlays,
+.no-photos {
     text-align: center;
     color: #999;
     padding: 20px;
 }
+
+    /* ========================================= */
+    /* SIDEBAR */
+    /* ========================================= */
 
 .editor-sidebar {
     background: white;
@@ -428,6 +536,10 @@ main {
     margin-bottom: 15px;
     color: #333;
 }
+
+    /* ========================================= */
+    /* USER PHOTOS */
+    /* ========================================= */
 
 .user-photos {
     display: grid;
@@ -465,6 +577,8 @@ main {
     opacity: 1;
 }
 
+    /* DELETE BUTTON */
+
 .delete-photo-btn {
     background: #dc3545;
     color: white;
@@ -473,7 +587,15 @@ main {
     border-radius: 5px;
     cursor: pointer;
     font-size: 1.2em;
+    transition: all 0.3s;
 }
+
+.delete-photo-btn:hover {
+    background: #bb2d3b;
+    transform: scale(1.05);
+}
+
+    /* PHOTO STATS */
 
 .photo-stats {
     position: absolute;
@@ -486,6 +608,44 @@ main {
     font-size: 0.85em;
 }
 
+        /* ========================================= */
+        /* RESPONSIVE */
+        /* ========================================= */
+
+@media (max-width: 900px) {
+
+    .editor-container {
+        grid-template-columns: 1fr;
+    }
+
+    .editor-sidebar {
+        max-height: none;
+    }
+
+    .image-preview {
+        height: 400px;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .editor-main,
+    .editor-sidebar {
+        padding: 15px;
+    }
+
+    .image-preview {
+        height: 300px;
+    }
+
+    .sticker {
+        width: 90px;
+    }
+
+    .overlays-grid {
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    }
+}
 /* ========================================= */
 /* INPUT WITH TOGGLE */
 /* ========================================= */

@@ -41,6 +41,9 @@ switch ($page) {
     case 'photo-create':
         $photo->create();
         break;
+    case 'photo-delete':
+        $photo->delete();
+        break;
     case 'home':
     default:
         $view = '../src/views/home.php';

@@ -25,7 +25,6 @@ CREATE TABLE IF NOT EXISTS photos (
     user_id INT NOT NULL,
     filename VARCHAR(255) NOT NULL,
     original_filename VARCHAR(255) DEFAULT NULL,
-    overlay_used VARCHAR(255) DEFAULT NULL,
     title VARCHAR(255) DEFAULT NULL,
     description TEXT DEFAULT NULL,
     likes_count INT DEFAULT 0,
