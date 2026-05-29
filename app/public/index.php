@@ -7,10 +7,12 @@ require_once '../src/models/user.php';
 require_once '../src/services/emailService.php';
 require_once '../src/controllers/userController.php';
 require_once '../src/controllers/photoController.php';
+require_once '../src/controllers/galleryController.php';
 
 $page = $_GET['page'] ?? 'home';
 $auth = new AuthController();
 $photo = new PhotoController();
+$gallery = new GalleryController();
 
 switch ($page) {
     case 'register':
@@ -45,6 +47,8 @@ switch ($page) {
         $photo->delete();
         break;
     case 'home':
+        $gallery->gallery();
+        break;
     default:
         $view = '../src/views/home.php';
         require_once '../src/views/layouts/main.php';

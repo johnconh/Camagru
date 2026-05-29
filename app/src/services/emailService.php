@@ -116,4 +116,21 @@ class EmailService {
         }
         return $response;
     }
+
+    public static function sendCommentNotification($to, $photoAuthor, $commenter, $content) {
+        $smtp_host = $_ENV['MAIL_HOST'] ?? 'smtp.gmail.com';
+        $smtp_port = $_ENV['MAIL_PORT'] ?? 587;
+        $smtp_user = $_ENV['MAIL_USERNAME'] ?? '';
+        $smtp_pass = $_ENV['MAIL_PASSWORD'] ?? '';
+        
+        $subject = "New comment on your Camagru photo";
+        $body = "Hello $photoAuthor!\n\n$commenter commented on your photo:\n\n\"$content\"\n\nVisit your gallery to reply!\n\nThank you!";
+        
+        try {
+            return self::sendSMTP($smtp_host, $smtp_port, $smtp_user, $smtp_pass, $to, $subject, $body);
+        } catch (Exception $e) {
+            error_log("Error sending comment notification: " . $e->getMessage());
+            return false;
+        }
+    }
 }
