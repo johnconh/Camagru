@@ -497,17 +497,28 @@ createBtn.addEventListener('click', async function(){
 
     formData.append('image', uploadedImage);
 
+    const scaleX =
+        baseImage.width / canvas.imageWidth;
+
+    const scaleY =
+        baseImage.height / canvas.imageHeight;
+
     const stickersData = stickers.map(sticker => {
 
         return {
 
             filename: sticker.filename,
 
-            x: sticker.x,
+            x:
+                (sticker.x - canvas.imageX)
+                * scaleX,
 
-            y: sticker.y,
+            y:
+                (sticker.y - canvas.imageY)
+                * scaleY,
 
-            width: sticker.width
+            width:
+                sticker.width * scaleX
         };
     });
 
