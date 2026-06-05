@@ -49,6 +49,12 @@ switch ($page) {
     case 'home':
         $gallery->gallery();
         break;
+    case 'gallery':
+        $gallery->gallery();
+        break;
+    case 'photo':
+        $gallery->show($_GET['id'] ?? 0);
+        break;
     default:
         $view = '../src/views/home.php';
         require_once '../src/views/layouts/main.php';

@@ -46,6 +46,29 @@ class GalleryController {
         $view = '../src/views/gallery/gallery.php';
         require_once '../src/views/layouts/main.php';
     }
+
+    public function show($id) {
+
+        session_start();
+
+        $photo = Photo::findById($id);
+
+        if (!$photo) {
+            http_response_code(404);
+            exit('Photo not found');
+        }
+
+        $photo['comments'] = Comment::getPhotoComments($id);
+
+        $userId = $_SESSION['user_id'] ?? null;
+        $photo['liked_by_me'] = $userId
+            ? Like::exists($userId, $id)
+            : false;
+
+        $view = '../src/views/gallery/photo.php';
+
+        require_once '../src/views/layouts/main.php';
+    }
     
     public function addComment() {
         session_start();
