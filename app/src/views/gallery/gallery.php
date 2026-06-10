@@ -1,7 +1,5 @@
 <div class="gallery-container">
 
-    <h2>📸 Gallery</h2>
-
     <?php if(empty($photos)): ?>
 
         <p>No photos yet</p>

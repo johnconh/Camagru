@@ -754,6 +754,36 @@ main {
 /* ========================================= */
 /* PHOTO */
 /* ========================================= */
+.photo-meta-row{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.photo-user{
+    margin:0;
+    font-size:1.1rem;
+}
+
+.photo-likes{
+    display:flex;
+    align-items:center;
+    gap:5px;
+}
+
+.like-btn{
+    margin-left:auto;
+    background:#667eea;
+    color:white;
+    border:none;
+    padding:6px 12px;
+    border-radius:20px;
+    cursor:pointer;
+}
+
+.like-btn.liked{
+    background:#ff4d6d;
+}
 
 .single-photo-page{
     max-width:900px;

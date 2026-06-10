@@ -46,11 +46,15 @@ switch ($page) {
     case 'photo-delete':
         $photo->delete();
         break;
+    case 'gallery':
     case 'home':
         $gallery->gallery();
         break;
-    case 'gallery':
-        $gallery->gallery();
+    case 'toggleLike':
+        $gallery->toggleLike();
+        break;
+    case 'addComment':
+        $gallery->addComment();
         break;
     case 'photo':
         $gallery->show($_GET['id'] ?? 0);
