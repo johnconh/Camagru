@@ -16,6 +16,7 @@ if (!empty($_SESSION['user_id'])) {
     <a href="?page=home" class="logo" aria-label="Home">📸 Camagru</a>
     <nav>
         <?php if (!empty($_SESSION['user_id'])): ?>
+            <a href="?page=photoEditor" title="Edit photos">🎨 Edit photos</a>
             <a href="?page=editProfile" title="Edit profile">Welcome, <?= $username ?>!</a>
             <a href="?page=logout" title="Logout">👋</a>
         <?php else: ?>

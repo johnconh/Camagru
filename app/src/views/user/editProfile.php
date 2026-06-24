@@ -10,6 +10,7 @@
                     id="username"
                     name="username"
                     placeholder="Enter your username"
+                    autocomplete="UserName"
                     value="<?= htmlspecialchars($user['username'] ?? '') ?>"
                     required
                 >
@@ -41,6 +42,7 @@
                         id="current_password"
                         name="current_password"
                         placeholder="Enter your current password"
+                        autocomplete="current-password"
                     >
                     <button type="button" class="toggle-password" data-target="current_password" aria-label="Show password">👁️</button>
                 </div>
@@ -54,6 +56,7 @@
                         id="new_password"
                         name="new_password"
                         placeholder="Enter your new password"
+                        autocomplete="new_password"
                     >
                     <button type="button" class="toggle-password" data-target="new_password" aria-label="Show password">👁️</button>
                 </div>
@@ -67,6 +70,7 @@
                         id="confirm_password"
                         name="confirm_password"
                         placeholder="Confirm your new password"
+                        autocomplete="new_password"
                     >
                     <button type="button" class="toggle-password" data-target="confirm_password" aria-label="Show password">👁️</button>
                 </div>
