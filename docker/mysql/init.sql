@@ -63,7 +63,9 @@ CREATE TABLE IF NOT EXISTS comments (
     FOREIGN KEY (photo_id) REFERENCES photos(id) ON DELETE CASCADE,
     INDEX idx_photo_id (photo_id),
     INDEX idx_user_id (user_id),
-    INDEX idx_created_at (created_at)
+    INDEX idx_created_at (created_at),
+
+    UNIQUE KEY unique_user_photo_comment (user_id, photo_id)
 );
 
 DELIMITER $$

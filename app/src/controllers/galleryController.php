@@ -47,57 +47,68 @@ class GalleryController {
         require_once '../src/views/layouts/main.php';
     }
 
-public function show($id) {
+    public function show($id) {
 
-    session_start();
+        session_start();
 
-    $photo = Photo::findById($id);
+        $photo = Photo::findById($id);
 
-    if (!$photo) {
-        http_response_code(404);
-        exit('Photo not found');
+        if (!$photo) {
+            http_response_code(404);
+            exit('Photo not found');
+        }
+
+        $photo['comments'] = Comment::getPhotoComments($id);
+
+        $userId = $_SESSION['user_id'] ?? null;
+
+        $photo['liked_by_me'] = $userId
+            ? Like::exists($userId, $id)
+            : false;
+
+        $photo['is_owner'] = $userId && ($userId == $photo['user_id']);
+
+        $view = '../src/views/gallery/photo.php';
+
+        require_once '../src/views/layouts/main.php';
     }
-
-    $photo['comments'] = Comment::getPhotoComments($id);
-
-    $userId = $_SESSION['user_id'] ?? null;
-
-    $photo['liked_by_me'] = $userId
-        ? Like::exists($userId, $id)
-        : false;
-
-    $photo['is_owner'] = $userId && ($userId == $photo['user_id']);
-
-    $view = '../src/views/gallery/photo.php';
-
-    require_once '../src/views/layouts/main.php';
-}
     
     public function addComment() {
         session_start();
-        
+
         if (!isset($_SESSION['user_id'])) {
             $this->jsonResponse(false, 'You must be logged in');
         }
-        
+
         $userId = $_SESSION['user_id'];
         $photoId = $_POST['photo_id'] ?? '';
         $content = $_POST['content'] ?? '';
-        
+
         if (empty($photoId) || empty($content)) {
             $this->jsonResponse(false, 'Photo and comment content required');
         }
-        
-        // Crear comentario
+
+        $photo = Photo::findById($photoId);
+        if (!$photo) {
+            $this->jsonResponse(false, 'Photo not found');
+        }
+
+
+        if ($photo['user_id'] == $userId) {
+            $this->jsonResponse(false, 'You cannot comment your own photo');
+        }
+
+        if (Comment::existsByUserAndPhoto($userId, $photoId)) {
+            $this->jsonResponse(false, 'You already commented this photo');
+        }
+
         $commentId = Comment::create($userId, $photoId, $content);
-        
+
         if ($commentId) {
-            // Obtener datos de la foto y su autor
-            $photo = Photo::findById($photoId);
+
             $author = User::findByID($photo['user_id']);
             $commenter = User::findByID($userId);
-            
-            // Enviar email al autor si tiene notificaciones habilitadas
+
             if ($author['email_notifications']) {
                 EmailService::sendCommentNotification(
                     $author['email'],
@@ -106,20 +117,27 @@ public function show($id) {
                     $content
                 );
             }
-            
-            // Obtener el comentario con datos del usuario
+
             $stmt = Database::getConnection()->prepare("
-                SELECT c.*, u.username FROM comments c 
+                SELECT c.*, u.username 
+                FROM comments c 
                 JOIN users u ON c.user_id = u.id 
                 WHERE c.id = :id
             ");
+
             $stmt->execute([':id' => $commentId]);
             $newComment = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            $this->jsonResponse(true, 'Comment added', ['comment' => $newComment]);
-        } else {
-            $this->jsonResponse(false, 'Error adding comment');
+
+            $countStmt = Database::getConnection()->prepare(" SELECT COUNT(*) FROM comments  WHERE photo_id = :id");
+            $countStmt->execute([':id' => $photoId]);
+            $commentsCount = (int)$countStmt->fetchColumn();
+
+            $this->jsonResponse(true, 'Comment added', [
+                'comment' => $newComment,
+                'comments_count' => $commentsCount
+            ]);
         }
+        $this->jsonResponse(false, 'Error adding comment');
     }
     
     public function toggleLike() {

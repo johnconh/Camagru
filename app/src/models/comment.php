@@ -7,24 +7,34 @@ class Comment {
     
     public static function create($userId, $photoId, $content) {
         $db = Database::getConnection();
-        
-        $stmt = $db->prepare("
-            INSERT INTO comments (user_id, photo_id, content) 
-            VALUES (:user_id, :photo_id, :content)
-        ");
-        
-        $success = $stmt->execute([
-            ':user_id' => $userId,
-            ':photo_id' => $photoId,
-            ':content' => htmlspecialchars($content, ENT_QUOTES, 'UTF-8')
-        ]);
-        
-        if ($success) {
-            return $db->lastInsertId();
+
+        try {
+            $stmt = $db->prepare("
+                INSERT INTO comments (user_id, photo_id, content) 
+                VALUES (:user_id, :photo_id, :content)
+            ");
+
+            $success = $stmt->execute([
+                ':user_id' => $userId,
+                ':photo_id' => $photoId,
+                ':content' => htmlspecialchars($content, ENT_QUOTES, 'UTF-8')
+            ]);
+
+            if ($success) {
+                return $db->lastInsertId();
+            }
+
+            return false;
+
+        } catch (PDOException $e) {
+
+            if ($e->errorInfo[1] == 1062) {
+                return 'duplicate';
+            }
+            throw $e;
         }
-        return false;
     }
-    
+        
     public static function getPhotoComments($photoId) {
         $db = Database::getConnection();
         
@@ -53,5 +63,21 @@ class Comment {
         
         $stmt = $db->prepare("DELETE FROM comments WHERE id = :id");
         return $stmt->execute([':id' => $commentId]);
+    }
+
+    public static function existsByUserAndPhoto($userId, $photoId) {
+        $stmt = Database::getConnection()->prepare("
+            SELECT 1
+            FROM comments
+            WHERE user_id = :user_id AND photo_id = :photo_id
+            LIMIT 1
+        ");
+
+        $stmt->execute([
+            ':user_id' => $userId,
+            ':photo_id' => $photoId
+        ]);
+
+        return (bool) $stmt->fetch();
     }
 }

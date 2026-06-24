@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Camagru</title>
-    <link rel="stylesheet" href="assets/main.css?v=1">
+    <link rel="stylesheet" href="assets/main.css?v=1.5">
 </head>
 <body>
     <?php include 'header.php'; ?>

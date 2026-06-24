@@ -47,7 +47,7 @@
         <!-- COMMENTS -->
         <div class="comments">
 
-            <h4>
+            <h4 class="comments-count">
                 Comments (<?= count($photo['comments']) ?>)
             </h4>
 
@@ -68,7 +68,7 @@
         </div>
 
         <!-- COMMENT FORM -->
-        <?php if(isset($_SESSION['user_id']) && !$photo['is_owner']): ?>
+        <?php if (isset($_SESSION['user_id']) && !$photo['is_owner'] && !Comment::existsByUserAndPhoto($_SESSION['user_id'], $photo['id'])): ?>
 
             <form
                 class="comment-form"
@@ -133,38 +133,67 @@
 
     document.querySelectorAll('.comment-form').forEach(form => {
 
-        form.addEventListener('submit', async function (e) {
+        let isSubmitting = false;
 
+        form.addEventListener('submit', async function (e) {
             e.preventDefault();
+
+            if (isSubmitting) return;
+            isSubmitting = true;
 
             const photoId = this.dataset.photoId;
             const input = this.querySelector('.comment-input');
+            const button = this.querySelector('button');
 
-            const response = await fetch('index.php?page=addComment', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: 'photo_id=' + photoId + '&content=' + encodeURIComponent(input.value)
-            });
+            button.disabled = true;
 
-            const text = await response.text();
-            const data = JSON.parse(text);
+            try {
+                const response = await fetch('index.php?page=addComment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: new URLSearchParams({
+                        photo_id: photoId,
+                        content: input.value
+                    })
+                });
 
-            if (data.success) {
+                const data = await response.json();
 
-                const commentsList = this.parentElement.querySelector('.comments');
+                if (!data.success) {
+                    console.warn(data.message);
+                    return;
+                }
+
+                const root = document.querySelector(
+                    `.single-photo-card[data-photo-id="${photoId}"]`
+                ) || document.querySelector('.single-photo-card');
+
+                const commentsList = root.querySelector('.comments');
 
                 const div = document.createElement('div');
                 div.className = 'comment';
-                div.innerHTML =
-                    '<strong>' + data.data.comment.username + '</strong> ' +
-                    data.data.comment.content;
+                div.innerHTML = `
+                    <strong>${data.data.comment.username}</strong>
+                    ${data.data.comment.content}
+                `;
 
                 commentsList.appendChild(div);
 
+                root.querySelector('.comments-count').textContent =
+                    `Comments (${data.data.comments_count})`;
+
                 input.value = '';
+
+                form.remove();
+
+            } catch (err) {
+                console.error('Error:', err);
+            } finally {
+                isSubmitting = false;
+                button.disabled = false;
             }
         });
     });

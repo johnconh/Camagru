@@ -1,9 +1,6 @@
+<h2 style="text-align: center;">Edit Profile</h2>
 <div class="profile-container">
     <div class="profile-card">
-        <h2>Edit Profile</h2>
-        <p style="text-align: center; color: #666; margin-bottom: 30px;">
-            Update your account information
-        </p>
         <div id="message-container"></div>
         <form id="editProfileForm" method="POST">
             <div class="form-group">
