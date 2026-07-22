@@ -11,12 +11,19 @@
 
             <canvas id="editorCanvas"></canvas>
 
+            <!-- Webcam -->
+            <video
+                id="cameraPreview"
+                autoplay
+                playsinline
+                hidden
+            ></video>
         </div>
 
         <!-- UPLOAD -->
         <div class="upload-section">
 
-            <label for="imageUpload" class="upload-btn">
+            <label for="imageUpload" class="upload-btn" id="uploadImageBtn">
                 📁 Choose Image
             </label>
 
@@ -27,6 +34,30 @@
                 style="display:none;"
             >
 
+            <button
+                type="button"
+                id="openCameraBtn"
+                class="upload-btn"
+            >
+                📷 Open Camera
+            </button>
+            <button
+                type="button"
+                id="takePhotoBtn"
+                class="upload-btn"
+                hidden
+            >
+                📸 Take Photo
+            </button>
+
+            <button
+                type="button"
+                id="closeCameraBtn"
+                class="upload-btn"
+                hidden
+            >
+                ✖ Close Camera
+            </button>
             <p id="filename" class="filename-display"></p>
 
         </div>
@@ -145,6 +176,15 @@ let selectedSticker = null;
 let offsetX = 0;
 let offsetY = 0;
 
+const openCameraBtn = document.getElementById('openCameraBtn');
+const takePhotoBtn = document.getElementById('takePhotoBtn');
+const closeCameraBtn = document.getElementById('closeCameraBtn');
+const cameraPreview = document.getElementById('cameraPreview');
+const uploadLabel = document.querySelector('label[for="imageUpload"]');
+
+let cameraStream = null;
+let cameraMode = false;
+
 /* ========================================= */
 /* RESIZE CANVAS */
 /* ========================================= */
@@ -205,7 +245,17 @@ function drawCanvas(){
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if(baseImage){
+    if (cameraMode) {
+
+        ctx.drawImage(
+            cameraPreview,
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+    } else if(baseImage){
 
         const imageRatio =
             baseImage.width / baseImage.height;
@@ -612,4 +662,136 @@ document.querySelectorAll('.delete-photo-btn').forEach(btn => {
     });
 });
 
+/* ========================================= */
+/* OPEN CAMERA */
+/* ========================================= */
+openCameraBtn.addEventListener('click', async () => {
+
+    try {
+
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: false
+        });
+
+        cameraPreview.srcObject = cameraStream;
+
+        await cameraPreview.play();
+
+        cameraMode = true;
+
+        renderCamera();
+
+        uploadLabel.hidden = true;
+        cameraPreview.hidden = true;
+        takePhotoBtn.hidden = false;
+        closeCameraBtn.hidden = false;
+        openCameraBtn.hidden = true;
+
+    } catch (err) {
+
+        console.error(err);
+        alert('Unable to access camera.');
+
+    }
+
+});
+
+function renderCamera() {
+
+    if (!cameraMode) {
+        return;
+    }
+
+    drawCanvas();
+
+    requestAnimationFrame(renderCamera);
+}
+
+/* ========================================= */
+/* TAKE CAMERA  PHOTO*/
+/* ========================================= */
+function dataURLtoFile(dataUrl, filename) {
+
+    const arr = dataUrl.split(',');
+
+    const mime = arr[0].match(/:(.*?);/)[1];
+
+    const bstr = atob(arr[1]);
+
+    let n = bstr.length;
+
+    const u8arr = new Uint8Array(n);
+
+    while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+
+    return new File([u8arr], filename, {
+        type: mime
+    });
+}
+
+takePhotoBtn.addEventListener('click', () => {
+
+    cameraMode = false;
+
+    if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+    }
+
+    const dataURL = canvas.toDataURL('image/png');
+
+    uploadedImage = dataURLtoFile(
+        dataURL,
+        'webcam-photo.png'
+    );
+
+    baseImage = new Image();
+
+    baseImage.onload = () => {
+
+        stopCamera();
+        drawCanvas();
+
+        checkCanCreate();
+    };
+
+    baseImage.src = dataURL;
+
+    takePhotoBtn.hidden = true;
+    closeCameraBtn.hidden = true;
+    openCameraBtn.hidden = false;
+    uploadLabel.hidden = false;
+});
+
+/* ========================================= */
+/* STOP CAMERA  PHOTO*/
+/* ========================================= */
+
+function stopCamera() {
+
+    cameraMode = false;
+
+    if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+    }
+
+    cameraPreview.srcObject = null;
+
+    openCameraBtn.hidden = false;
+    uploadLabel.hidden = false;
+
+    takePhotoBtn.hidden = true;
+    closeCameraBtn.hidden = true;
+
+    drawCanvas();
+}
+
+closeCameraBtn.addEventListener('click', () => {
+
+    stopCamera();
+
+});
 </script>
