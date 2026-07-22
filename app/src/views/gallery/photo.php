@@ -2,29 +2,24 @@
 
     <div class="single-photo-card">
 
-        <!-- FOTO -->
         <img
             src="assets/images/uploads/<?= htmlspecialchars($photo['filename']) ?>"
             alt=""
             class="single-photo"
         >
 
-        <!-- META -->
         <div class="photo-meta">
 
             <div class="photo-meta-row">
 
-                <!-- USER -->
                 <h3 class="photo-user">
                     <?= htmlspecialchars($photo['username']) ?>
                 </h3>
 
-                <!-- LIKES -->
                 <span class="photo-likes">
                     ❤️ <?= $photo['likes_count'] ?>
                 </span>
 
-                <!-- LIKE BUTTON (solo si no eres el autor) -->
                 <?php if(isset($_SESSION['user_id']) && !$photo['is_owner']): ?>
 
                     <button
@@ -44,7 +39,6 @@
 
         <hr>
 
-        <!-- COMMENTS -->
         <div class="comments">
 
             <h4 class="comments-count">
@@ -67,7 +61,6 @@
 
         </div>
 
-        <!-- COMMENT FORM -->
         <?php if (isset($_SESSION['user_id']) && !$photo['is_owner'] && !Comment::existsByUserAndPhoto($_SESSION['user_id'], $photo['id'])): ?>
 
             <form

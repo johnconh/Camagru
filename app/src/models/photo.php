@@ -4,10 +4,6 @@ require_once __DIR__.'/../config/database.php';
 
 class Photo {
 
-    /* ========================================= */
-    /* CREATE PHOTO */
-    /* ========================================= */
-
     public static function create(
         $userId,
         $filename,
@@ -53,10 +49,6 @@ class Photo {
         return false;
     }
 
-    /* ========================================= */
-    /* GET USER PHOTOS */
-    /* ========================================= */
-
     public static function getUserPhotos(
         $userId,
         $limit = 20
@@ -93,10 +85,6 @@ class Photo {
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
-    /* ========================================= */
-    /* GET ALL PHOTOS */
-    /* ========================================= */
 
     public static function getAllPhotos(
         $page = 1,
@@ -136,10 +124,6 @@ class Photo {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /* ========================================= */
-    /* COUNT ALL PHOTOS */
-    /* ========================================= */
-
     public static function countAllPhotos() {
 
         $db = Database::getConnection();
@@ -153,10 +137,6 @@ class Photo {
 
         return $result['total'];
     }
-
-    /* ========================================= */
-    /* DELETE PHOTO */
-    /* ========================================= */
 
     public static function delete(
         $photoId,
@@ -208,10 +188,6 @@ class Photo {
             ':user_id' => $userId
         ]);
     }
-
-    /* ========================================= */
-    /* FIND PHOTO BY ID */
-    /* ========================================= */
 
     public static function findById($photoId) {
 

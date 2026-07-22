@@ -1,11 +1,7 @@
 <div class="auth-page">
-
     <div class="auth-container">
-
         <div class="auth-card verify-card">
-
             <?php if(isset($success) && $success): ?>
-
                 <div class="verify-icon success">
                     ✅
                 </div>
@@ -22,7 +18,6 @@
                 >
                     Login now
                 </a>
-
             <?php else: ?>
 
                 <div class="verify-icon error">
@@ -41,11 +36,7 @@
                 >
                     Create account
                 </a>
-
             <?php endif; ?>
-
         </div>
-
     </div>
-
 </div>

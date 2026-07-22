@@ -5,19 +5,11 @@ require_once __DIR__ . '/../models/user.php';
 
 class PhotoController {
 
-    /* ========================================= */
-    /* AJAX CHECK */
-    /* ========================================= */
-
     private function isAjax(){
 
         return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
             strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
     }
-
-    /* ========================================= */
-    /* JSON RESPONSE */
-    /* ========================================= */
 
     private function jsonResponse($success, $message, $data = []) {
 
@@ -31,10 +23,6 @@ class PhotoController {
 
         exit;
     }
-
-    /* ========================================= */
-    /* EDITOR PAGE */
-    /* ========================================= */
 
     public function editor(){
 
@@ -63,10 +51,6 @@ class PhotoController {
 
         require_once '../src/views/layouts/main.php';
     }
-
-    /* ========================================= */
-    /* GET STICKERS */
-    /* ========================================= */
 
     private function getOverlayImages(){
 
@@ -97,10 +81,6 @@ class PhotoController {
         return $overlays;
     }
 
-    /* ========================================= */
-    /* CREATE PHOTO */
-    /* ========================================= */
-
     public function create(){
 
         session_start();
@@ -111,10 +91,6 @@ class PhotoController {
         }
 
         $userID = $_SESSION['user_id'];
-
-        /* ========================================= */
-        /* STICKERS */
-        /* ========================================= */
 
         $stickers = json_decode(
             $_POST['stickers'] ?? '[]',
@@ -128,10 +104,6 @@ class PhotoController {
                 'Please add at least one sticker'
             );
         }
-
-        /* ========================================= */
-        /* IMAGE VALIDATION */
-        /* ========================================= */
 
         if (
             !isset($_FILES['image']) ||
@@ -166,10 +138,6 @@ class PhotoController {
                 'Image size exceeds 5MB limit'
             );
         }
-
-        /* ========================================= */
-        /* PROCESS IMAGE */
-        /* ========================================= */
 
         try {
 
@@ -219,10 +187,6 @@ class PhotoController {
         }
     }
 
-    /* ========================================= */
-    /* PROCESS IMAGE WITH STICKERS */
-    /* ========================================= */
-
     private function processImage($imagePath, $stickers){
 
         $baseImage = $this->createImageFromFile($imagePath);
@@ -255,26 +219,14 @@ class PhotoController {
                 continue;
             }
 
-            /* ========================================= */
-            /* ORIGINAL STICKER SIZE */
-            /* ========================================= */
-
             $originalWidth = imagesx($sticker);
             $originalHeight = imagesy($sticker);
-
-            /* ========================================= */
-            /* NEW SIZE */
-            /* ========================================= */
 
             $newWidth = intval($stickerData['width'] ?? 120);
 
             $newHeight = intval(
                 ($originalHeight / $originalWidth) * $newWidth
             );
-
-            /* ========================================= */
-            /* CREATE RESIZED STICKER */
-            /* ========================================= */
 
             $resizedSticker = imagecreatetruecolor(
                 $newWidth,
@@ -313,16 +265,10 @@ class PhotoController {
                 $originalHeight
             );
 
-            /* ========================================= */
-            /* POSITION */
-            /* ========================================= */
 
             $x = intval($stickerData['x'] ?? 0);
             $y = intval($stickerData['y'] ?? 0);
 
-            /* ========================================= */
-            /* ADD STICKER TO IMAGE */
-            /* ========================================= */
 
             imagecopy(
                 $baseImage,
@@ -335,18 +281,10 @@ class PhotoController {
                 $newHeight
             );
 
-            /* ========================================= */
-            /* CLEAN MEMORY */
-            /* ========================================= */
-
             imagedestroy($sticker);
 
             imagedestroy($resizedSticker);
         }
-
-        /* ========================================= */
-        /* SAVE FINAL IMAGE */
-        /* ========================================= */
 
         $filename = 'photo_' . time() . '_' . uniqid() . '.png';
 
@@ -367,9 +305,6 @@ class PhotoController {
         return $filename;
     }
 
-    /* ========================================= */
-    /* CREATE IMAGE FROM FILE */
-    /* ========================================= */
 
     private function createImageFromFile($path){
 
@@ -400,9 +335,6 @@ class PhotoController {
         }
     }
 
-    /* ========================================= */
-    /* DELETE PHOTO */
-    /* ========================================= */
 
     public function delete(){
 

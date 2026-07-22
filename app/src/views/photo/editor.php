@@ -1,17 +1,10 @@
 <div class="editor-container">
-
     <div class="editor-main">
-
         <h2>📸 Create Photo</h2>
-
         <div id="message-container"></div>
-
-        <!-- PREVIEW -->
         <div class="image-preview">
-
             <canvas id="editorCanvas"></canvas>
 
-            <!-- Webcam -->
             <video
                 id="cameraPreview"
                 autoplay
@@ -19,8 +12,6 @@
                 hidden
             ></video>
         </div>
-
-        <!-- UPLOAD -->
         <div class="upload-section">
 
             <label for="imageUpload" class="upload-btn" id="uploadImageBtn">
@@ -59,12 +50,9 @@
                 ✖ Close Camera
             </button>
             <p id="filename" class="filename-display"></p>
-
         </div>
 
-        <!-- STICKERS -->
         <div class="overlays-section">
-
             <h3>Select stickers:</h3>
 
             <div class="overlays-grid">
@@ -82,40 +70,24 @@
                         >
 
                     </div>
-
                 <?php endforeach; ?>
-
             </div>
-
         </div>
-
-        <!-- CREATE BUTTON -->
         <button id="createBtn" class="btn btn-primary" disabled>
             Create Photo
         </button>
-
     </div>
-
-    <!-- SIDEBAR -->
     <div class="editor-sidebar">
-
         <h3>Your Photos</h3>
-
         <div class="user-photos">
-
             <?php if (empty($userPhotos)): ?>
-
                 <p class="no-photos">No photos yet</p>
-
             <?php else: ?>
-
                 <?php foreach ($userPhotos as $photo): ?>
-
                     <div
                         class="photo-thumbnail"
                         data-photo-id="<?= $photo['id'] ?>"
                     >
-
                         <img
                             src="assets/images/uploads/<?= htmlspecialchars($photo['filename']) ?>"
                             alt="Photo"
@@ -136,35 +108,21 @@
                             ❤️ <?= $photo['likes_count'] ?>
                             💬 <?= $photo['comments_count'] ?>
                         </div>
-
                     </div>
-
                 <?php endforeach; ?>
-
             <?php endif; ?>
-
         </div>
-
     </div>
-
 </div>
 
 <script>
 
-/* ========================================= */
-/* VARIABLES */
-/* ========================================= */
-
 let uploadedImage = null;
 
 const canvas = document.getElementById('editorCanvas');
-
 const ctx = canvas.getContext('2d');
-
 const imageUpload = document.getElementById('imageUpload');
-
 const createBtn = document.getElementById('createBtn');
-
 const filenameDisplay = document.getElementById('filename');
 
 let baseImage = null;
@@ -185,10 +143,6 @@ const uploadLabel = document.querySelector('label[for="imageUpload"]');
 let cameraStream = null;
 let cameraMode = false;
 
-/* ========================================= */
-/* RESIZE CANVAS */
-/* ========================================= */
-
 function resizeCanvas(){
 
     const rect = canvas.parentElement.getBoundingClientRect();
@@ -203,10 +157,6 @@ function resizeCanvas(){
 window.addEventListener('resize', resizeCanvas);
 
 resizeCanvas();
-
-/* ========================================= */
-/* IMAGE UPLOAD */
-/* ========================================= */
 
 imageUpload.addEventListener('change', function(e){
 
@@ -236,10 +186,6 @@ imageUpload.addEventListener('change', function(e){
 
     reader.readAsDataURL(file);
 });
-
-/* ========================================= */
-/* DRAW CANVAS */
-/* ========================================= */
 
 function drawCanvas(){
 
@@ -312,10 +258,6 @@ function drawCanvas(){
     });
 }
 
-/* ========================================= */
-/* ADD STICKERS */
-/* ========================================= */
-
 document.querySelectorAll('.overlay-item').forEach(item => {
 
     item.addEventListener('click', function(){
@@ -331,8 +273,6 @@ function addSticker(filename){
     const img = new Image();
 
     img.onload = function(){
-
-        /* SMALL RESPONSIVE SIZE */
 
         const size = canvas.width * 0.22;
 
@@ -358,10 +298,6 @@ function addSticker(filename){
 
     img.src = 'assets/images/overlays/' + filename;
 }
-
-/* ========================================= */
-/* SELECT STICKER */
-/* ========================================= */
 
 canvas.addEventListener('mousedown', function(e){
 
@@ -395,10 +331,6 @@ canvas.addEventListener('mousedown', function(e){
     }
 });
 
-/* ========================================= */
-/* MOVE STICKER */
-/* ========================================= */
-
 canvas.addEventListener('mousemove', function(e){
 
     if(!selectedSticker) return;
@@ -412,8 +344,6 @@ canvas.addEventListener('mousemove', function(e){
     selectedSticker.x = mouseX - offsetX;
 
     selectedSticker.y = mouseY - offsetY;
-
-    /* LIMITS */
 
     if(selectedSticker.x < 0){
         selectedSticker.x = 0;
@@ -438,10 +368,6 @@ canvas.addEventListener('mousemove', function(e){
     drawCanvas();
 });
 
-/* ========================================= */
-/* RELEASE */
-/* ========================================= */
-
 canvas.addEventListener('mouseup', function(){
 
     selectedSticker = null;
@@ -452,9 +378,6 @@ canvas.addEventListener('mouseleave', function(){
     selectedSticker = null;
 });
 
-/* ========================================= */
-/* RESIZE WITH WHEEL */
-/* ========================================= */
 
 canvas.addEventListener('wheel', function(e){
 
@@ -473,15 +396,11 @@ canvas.addEventListener('wheel', function(e){
         selectedSticker.height -= 10;
     }
 
-    /* MIN SIZE */
-
     if(selectedSticker.width < 20){
 
         selectedSticker.width = 20;
         selectedSticker.height = 20;
     }
-
-    /* MAX SIZE */
 
     if(selectedSticker.width > 300){
 
@@ -491,10 +410,6 @@ canvas.addEventListener('wheel', function(e){
 
     drawCanvas();
 });
-
-/* ========================================= */
-/* DOUBLE CLICK DELETE */
-/* ========================================= */
 
 canvas.addEventListener('dblclick', function(e){
 
@@ -528,18 +443,10 @@ canvas.addEventListener('dblclick', function(e){
     }
 });
 
-/* ========================================= */
-/* ENABLE BUTTON */
-/* ========================================= */
-
 function checkCanCreate(){
 
     createBtn.disabled = !(uploadedImage && stickers.length > 0);
 }
-
-/* ========================================= */
-/* CREATE PHOTO */
-/* ========================================= */
 
 createBtn.addEventListener('click', async function(){
 
@@ -619,10 +526,6 @@ createBtn.addEventListener('click', async function(){
     }
 });
 
-/* ========================================= */
-/* DELETE PHOTO */
-/* ========================================= */
-
 document.querySelectorAll('.delete-photo-btn').forEach(btn => {
 
     btn.addEventListener('click', async function(e){
@@ -662,9 +565,7 @@ document.querySelectorAll('.delete-photo-btn').forEach(btn => {
     });
 });
 
-/* ========================================= */
-/* OPEN CAMERA */
-/* ========================================= */
+
 openCameraBtn.addEventListener('click', async () => {
 
     try {
@@ -708,9 +609,7 @@ function renderCamera() {
     requestAnimationFrame(renderCamera);
 }
 
-/* ========================================= */
-/* TAKE CAMERA  PHOTO*/
-/* ========================================= */
+
 function dataURLtoFile(dataUrl, filename) {
 
     const arr = dataUrl.split(',');
@@ -765,9 +664,6 @@ takePhotoBtn.addEventListener('click', () => {
     uploadLabel.hidden = false;
 });
 
-/* ========================================= */
-/* STOP CAMERA  PHOTO*/
-/* ========================================= */
 
 function stopCamera() {
 

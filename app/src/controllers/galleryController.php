@@ -37,7 +37,6 @@ class GalleryController {
         
         $userId = $_SESSION['user_id'] ?? null;
         
-        // Obtener comentarios y likes para cada foto
         foreach ($photos as $key => $photo) {
             $photos[$key]['comments'] = Comment::getPhotoComments($photo['id']);
             $photos[$key]['liked_by_me'] = $userId ? Like::exists($userId, $photo['id']) : false;
@@ -164,7 +163,7 @@ class GalleryController {
             $action = 'added';
         }
         
-        // Obtener conteo actual de likes
+        
         $stmt = Database::getConnection()->prepare("SELECT likes_count FROM photos WHERE id = :id");
         $stmt->execute([':id' => $photoId]);
         $photo = $stmt->fetch(PDO::FETCH_ASSOC);

@@ -75,7 +75,6 @@
 
 </div>
     
-    <!-- Paginación -->
     <?php if ($totalPages > 1): ?>
         <div class="pagination">
             <?php if ($page > 1): ?>
